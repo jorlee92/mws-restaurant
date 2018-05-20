@@ -274,42 +274,58 @@ nav h1 a {
 }
 @media (max-width: 640px) { 
 
-  #map-container {
+  .inside #map-container {
     width: 100%;
   }
 
+  #restaurant-container > * :not(#resturaunt-cuisine){
+    /* We are laving the resturaunt-cuisine background its normal color */
+    background-color: white;
+  }
+
   #restaurant-container, #reviews-container {
-    width: 90%
+    position: relative;
+    width: 90%;
   }
   #restaurants-list li {
-
     width: 80%;
-
+  }
+  #restaurant-address, #restaurant-name{
+    /* Inline-block so that the background color does not cover the entire area behind the element, causing a lot of white space that looks fairly bad */
+    background-color: white;
+    display:inline-block
   }
 
  }
 @media (max-width: 968px) and (min-width: 641px) { 
-  #map-container {
+
+  .inside #map-container {
     width: 100%;
   }
+  #restaurant-container > * :not(#resturaunt-cuisine){
+    /* We are laving the resturaunt-cuisine background its normal color */
+    background-color: white;
+  }
   #restaurant-container, #reviews-container {
+    position: relative;
     width: 90%
   }
   #restaurants-list li {
-
     width: 30%;
-
+  }
+  #restaurant-address, #restaurant-name{
+    /* Inline-block so that the background color does not cover the entire area behind the element, causing a lot of white space that looks fairly bad */
+    background-color: white;
+    display:inline-block;
   }
 
  }
 @media (min-width: 969px) { 
-  #map-container {
+  .inside #map-container {
     width: 50%;
   }
   #restaurants-list li {
-
     width: 20%;
-
   }
 
  }
