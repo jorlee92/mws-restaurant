@@ -6,6 +6,8 @@ var urlsToCache = [
   '/js/dbhelper.js',
   '/js/main.js',
   '/js/restaurant_info.js',
+  'http://localhost:1337/restaurants',
+  '/manifest.json'
 ];
 
 self.addEventListener('install', function(event) {
@@ -22,15 +24,18 @@ self.addEventListener('install', function(event) {
 
 //See https://developers.google.com/web/fundamentals/primers/service-workers/
 self.addEventListener('fetch', function(event) {
+  console.log("Caught a fetch")
     event.respondWith(
       caches.match(event.request)
         .then(function(response) {
           if (response) {
+
             return response;
           }
   
           let fetchRequest = event.request.clone();
-  
+          console.log("Couldnt find response in cache");
+          console.log(event.request);
           return fetch(fetchRequest).then(
             function(response) {
               // Check if we received a valid response
