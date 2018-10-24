@@ -1,8 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#e5dedc"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/> 
 
   <!-- Normalize.css for better cross-browser consistency -->
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
@@ -38,18 +43,18 @@
     <section role="main" id="restaurant-container">
       <h2 id="restaurant-name"></h2>
     </br>
-      <button type="button">Favorite</button>
+      <button type="button" id="favoriteButton" onclick="toggleFavorite();return false">Favorite/Unfavorite</button>
       <img id="restaurant-img">
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address"></p>
       <table id="restaurant-hours"></table>
       <form>
-        <p>Leave a review</p><textarea id="comments" placeholder="Review goes here"></textarea>
+        <p>Leave a review</p><textarea aria-label="your review" id="comments" placeholder="Review goes here"></textarea>
       </br>
       <label for="name">Enter your name</label>
-        <input id="name" type="text" aria-label="name"></br>
+        <input aria-label="your name"id="name" type="text" aria-label="name"></br>
         <label for="number">Enter a rating between 1-5</label>
-        <input type="number" id="rating" min="1" max="5"></br>
+        <input aria-label="numerical rating" type="number" id="rating" min="1" max="5"></br>
         <button onclick="handleFormSubmit();return false">Submit</button>
         </form>
     </section>
@@ -83,6 +88,32 @@
   <!-- Main javascript file -->
   <script type="text/javascript" src="js/restaurant_info.js"></script>
   <script>
+    function toggleFavorite(restaraunt){
+      let ID = window.location.href.split("=")[1];
+      fetch('http://localhost:1337/restaurants/' + ID)
+      .then(result => { return result.json()})
+      .then(result => {
+        console.log(result.is_favorite)
+        if(result.is_favorite == "false"){
+          fetch('http://localhost:1337/restaurants/'+ ID + '/?is_favorite=true', {
+          method: 'PUT'
+          }).then(result => {
+            console.log(result);
+            location.reload();
+
+          })
+        }else {
+          fetch('http://localhost:1337/restaurants/'+ ID + '/?is_favorite=false', {
+          method: 'PUT'
+        }).then(result => {
+          console.log(result)
+          location.reload();
+
+        })
+        }
+      })
+
+    }
     function handleFormSubmit(){
       
       let name = document.getElementById('name').value;

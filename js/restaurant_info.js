@@ -1,14 +1,42 @@
 let restaurant;
 var newMap;
 
+/* Setup Service Worker */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').then(function(registration) {
+      // Registration was successful
+      console.log('ServiceWorker registration successful with scope: ', registration.scope);
+    }, function(err) {
+      // registration failed :(
+      console.log('ServiceWorker registration failed: ', err);
+    });
+  });
+}
 /**
  * Initialize Google map, called from HTML.
  */
 
 document.addEventListener('DOMContentLoaded', (event) => {  
   initMap();
+  setFavButton();
 });
 
+setFavButton = () => {
+  let ID = window.location.href.split("=")[1];
+  fetch('http://localhost:1337/restaurants/' + ID)
+  .then(result => { return result.json()})
+  .then(result => {
+    console.log(result.is_favorite)
+    if(result.is_favorite == "false"){
+      document.getElementById('favoriteButton').innerText = "Favorite";
+    }else {
+      document.getElementById('favoriteButton').innerText = "Un-Favorite";
+
+    }
+  })
+
+}
 initMap = () => {
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
@@ -32,6 +60,7 @@ initMap = () => {
     }
   });
 }  
+
 
 /**
  * Get current restaurant from page URL.
