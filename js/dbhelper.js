@@ -28,19 +28,6 @@ class DBHelper {
       callback(error, null);
     })
 
-    // let xhr = new XMLHttpRequest();
-    // xhr.open('GET', DBHelper.DATABASE_URL);
-    // xhr.onload = () => {
-    //   if (xhr.status === 200) { // Got a success response from server!
-    //     const json = JSON.parse(xhr.responseText);
-    //     const restaurants = json;
-    //     callback(null, restaurants);
-    //   } else { // Oops!. Got an error from server.
-        // const error = (`Request failed. Returned status of ${xhr.status}`);
-        // callback(error, null);
-    //   }
-    // };
-    // xhr.send();
   }
 
   /**
@@ -53,13 +40,27 @@ class DBHelper {
         callback(error, null);
       } else {
         const restaurant = restaurants.find(r => r.id == id);
-        if (restaurant) { // Got the restaurant
-          callback(null, restaurant);
+        if (restaurant) { // Got the restaurant, get the reviews
+          this.fetchReviewsByID(id, restaurant, callback)
+          // callback(null, restaurant);
         } else { // Restaurant does not exist in the database
           callback('Restaurant does not exist', null);
         }
       }
     });
+  }
+  /* Fetch reviews by restaurant ID */
+  static fetchReviewsByID(id, resturauntObject, nextStep){
+    resturauntObject.reviews = [];
+    fetch('http://localhost:1337/reviews/?restaurant_id=' + id)
+    .then(response => {return response.json()})
+    .then(json => {
+      resturauntObject.reviews =  json
+      nextStep(null, resturauntObject);
+    })
+    .catch((error) => {
+      nextStep(null, resturauntObject);
+    })
   }
 
   /**
