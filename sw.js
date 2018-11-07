@@ -24,6 +24,7 @@ self.addEventListener('install', function(event) {
 
 //See https://developers.google.com/web/fundamentals/primers/service-workers/
 self.addEventListener('fetch', function(event) {
+
   console.log("Caught a fetch")
     event.respondWith(
       caches.match(event.request)
@@ -55,3 +56,10 @@ self.addEventListener('fetch', function(event) {
         })
       );
   });
+  // See https://developers.google.com/web/updates/2015/12/background-sync
+  self.addEventListener('sync', function(event) {
+    if (event.tag == 'myFirstSync') {
+      event.waitUntil(doSomeStuff());
+    }
+  });
+  

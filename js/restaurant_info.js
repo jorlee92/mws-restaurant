@@ -28,7 +28,7 @@ setFavButton = () => {
   .then(result => { return result.json()})
   .then(result => {
     console.log(result.is_favorite)
-    if(result.is_favorite == "false"){
+    if(result.is_favorite == false || result.is_favorite == "false"){
       document.getElementById('favoriteButton').innerText = "Favorite";
     }else {
       document.getElementById('favoriteButton').innerText = "Un-Favorite";
