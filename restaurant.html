@@ -94,6 +94,7 @@
     function toggleFavorite(){
       let ID = window.location.href.split("=")[1];
       toggleFavStatus(ID);
+      // window.location.reload(true);
 
     }
     function handleFormSubmit(){
@@ -129,7 +130,7 @@
         })
       }).then(response => {
         console.log(response)
-        // window.location.reload(true);
+        window.location.reload(true);
 
       })
     }}
