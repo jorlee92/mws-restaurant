@@ -97,23 +97,42 @@
 
     }
     function handleFormSubmit(){
-      
+      let ID = window.location.href.split("=")[1];
       let name = document.getElementById('name').value;
-      let rating = document.getElementById('rating').value;sss
+      let rating = document.getElementById('rating').value;
       let comments = document.getElementById('comments').value;
+      if(!navigator.onLine){
+        console.log("User is offline, storing locally");
+        idbKeyval.get('review-'+ ID)
+        .then(result => {
+          if(result == undefined){
+            //Create a new entry
+            let reviews = [];
+            reviews.push({'restaurant_id': ID, 'name':name, 'rating': rating, 'comments': comments, 'postedOffline': true})
+            idbKeyval.set('review-' + ID, reviews)
+          } else {
+            let reviews = result;
+            reviews.push({'restaurant_id': ID, 'name':name, 'rating': rating, 'comments': comments, 'postedOffline': true})
+            idbKeyval.set('review-' + ID, reviews)
+          }
+        })
+
+      }
+      else {
       fetch('http://localhost:1337/reviews/', {
         method:'POST',
         body: JSON.stringify({
-          "restaurant_id":  window.location.href.split("=")[1],
+          "restaurant_id": ID,
           "name": name,
           "rating": rating,
           "comments" : comments
         })
       }).then(response => {
-        window.location.reload(true);
+        console.log(response)
+        // window.location.reload(true);
 
       })
-    }
+    }}
   </script>
   <!-- End scripts -->
 
