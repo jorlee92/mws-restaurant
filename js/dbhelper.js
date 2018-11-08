@@ -51,16 +51,31 @@ class DBHelper {
   }
   /* Fetch reviews by restaurant ID */
   static fetchReviewsByID(id, resturauntObject, nextStep){
-    resturauntObject.reviews = [];
-    fetch('http://localhost:1337/reviews/?restaurant_id=' + id)
-    .then(response => {return response.json()})
-    .then(json => {
-      resturauntObject.reviews =  json
-      nextStep(null, resturauntObject);
+    if(!navigator.onLine){
+      idbKeyval.get('review-' + id)
+      .then(result =>{
+        console.log(result);
+        resturauntObject.reviews =  result
+        nextStep(null, resturauntObject);
     })
     .catch((error) => {
       nextStep(null, resturauntObject);
     })
+    }
+    else{
+      resturauntObject.reviews = [];
+      fetch('http://localhost:1337/reviews/?restaurant_id=' + id)
+      .then(response => {return response.json()})
+      .then(json => {
+        resturauntObject.reviews =  json
+        console.log('Storing reviews for location '+ id);
+        idbKeyval.set('review-' + id, json);
+        nextStep(null, resturauntObject);
+      })
+      .catch((error) => {
+        nextStep(null, resturauntObject);
+      })
+    }
   }
 
   /**

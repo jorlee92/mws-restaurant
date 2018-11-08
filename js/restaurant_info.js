@@ -1,18 +1,5 @@
 let restaurant;
 var newMap;
-
-/* Setup Service Worker */
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js').then(function(registration) {
-      // Registration was successful
-      console.log('ServiceWorker registration successful with scope: ', registration.scope);
-    }, function(err) {
-      // registration failed :(
-      console.log('ServiceWorker registration failed: ', err);
-    });
-  });
-}
 /**
  * Initialize Google map, called from HTML.
  */
@@ -23,7 +10,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 setFavButton = () => {
-  
+  if(!navigator.onLine){
+    console.log('User is offline');
+    let ID = window.location.href.split("=")[1];
+    idbKeyval.get('fav-' + ID)
+    .then(result => {
+      console.log("setFavButton " + result)
+      if(result == false || result== "false"){
+        document.getElementById('favoriteButton').innerText = "Favorite";
+      }else {
+        document.getElementById('favoriteButton').innerText = "Un-Favorite";
+      }
+    })
+  }
+  else {
       let ID = window.location.href.split("=")[1];
       fetch('http://localhost:1337/restaurants/' + ID)
       .then(result => { return result.json()})
@@ -33,10 +33,10 @@ setFavButton = () => {
           document.getElementById('favoriteButton').innerText = "Favorite";
         }else {
           document.getElementById('favoriteButton').innerText = "Un-Favorite";
-
         }
       })
   }
+}
 
 initMap = () => {
   fetchRestaurantFromURL((error, restaurant) => {

@@ -1,7 +1,14 @@
 let toggleFavStatus = (ID) => {
 
-      fetch('http://localhost:1337/restaurants/' + ID)
+      fetch('http://localhost:1337/restaurants')
       .then(result => { return result.json()})
+      .then(result => {
+          for (let i = 0; i < result.length; i++){
+              if(result[i].id == ID){
+                  return result[i];
+              }
+          }
+      })
       .then(result => {
         console.log(result.is_favorite)
         result.is_favorite = JSON.parse(result.is_favorite)
@@ -11,7 +18,7 @@ let toggleFavStatus = (ID) => {
             console.log('isnt a favorite')
                 if(!navigator.onLine){
                     console.log("Offline, adding to key/val store");
-                    idbKeyval.set('fav-' + ID, is_favorite)
+                    idbKeyval.set('fav-' + ID, !result.is_favorite)
                 }
                 else { 
                     fetch('http://localhost:1337/restaurants/'+ ID + '/?is_favorite=true', {
@@ -27,7 +34,7 @@ let toggleFavStatus = (ID) => {
             console.log('is a favorite')
             if(!navigator.onLine){
                 console.log("Offline, adding to key/val store");
-                idbKeyval.set('fav-' + ID, is_favorite)
+                idbKeyval.set('fav-' + ID, !result.is_favorite)
             }
             else 
             {
