@@ -7,7 +7,8 @@ var urlsToCache = [
   '/js/main.js',
   '/js/restaurant_info.js',
   'http://localhost:1337/restaurants',
-  '/manifest.json'
+  '/manifest.json',
+  '/js/idb.js'
 ];
 
 self.addEventListener('install', function(event) {
@@ -25,18 +26,16 @@ self.addEventListener('install', function(event) {
 //See https://developers.google.com/web/fundamentals/primers/service-workers/
 self.addEventListener('fetch', function(event) {
 
-  console.log("Caught a fetch")
     event.respondWith(
       caches.match(event.request)
         .then(function(response) {
           if (response) {
-
+            console.log("Found response");
             return response;
           }
   
           let fetchRequest = event.request.clone();
           console.log("Couldnt find response in cache");
-          console.log(event.request);
           return fetch(fetchRequest).then(
             function(response) {
               // Check if we received a valid response
@@ -59,7 +58,7 @@ self.addEventListener('fetch', function(event) {
   // See https://developers.google.com/web/updates/2015/12/background-sync
   self.addEventListener('sync', function(event) {
     if (event.tag == 'myFirstSync') {
-      event.waitUntil(doSomeStuff());
+      event.waitUntil(console.log('myFirstSync'));
     }
   });
   

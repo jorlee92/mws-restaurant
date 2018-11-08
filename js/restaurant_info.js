@@ -23,20 +23,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 setFavButton = () => {
-  let ID = window.location.href.split("=")[1];
-  fetch('http://localhost:1337/restaurants/' + ID)
-  .then(result => { return result.json()})
-  .then(result => {
-    console.log(result.is_favorite)
-    if(result.is_favorite == false || result.is_favorite == "false"){
-      document.getElementById('favoriteButton').innerText = "Favorite";
-    }else {
-      document.getElementById('favoriteButton').innerText = "Un-Favorite";
+  
+      let ID = window.location.href.split("=")[1];
+      fetch('http://localhost:1337/restaurants/' + ID)
+      .then(result => { return result.json()})
+      .then(result => {
+        console.log(result.is_favorite)
+        if(result.is_favorite == false || result.is_favorite == "false"){
+          document.getElementById('favoriteButton').innerText = "Favorite";
+        }else {
+          document.getElementById('favoriteButton').innerText = "Un-Favorite";
 
-    }
-  })
+        }
+      })
+  }
 
-}
 initMap = () => {
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
