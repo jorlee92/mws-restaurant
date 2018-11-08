@@ -96,7 +96,8 @@ self.addEventListener('sync', function(event) {
 									}
 								}
 								else {
-									//It is a favStatus
+                  //It is a favStatus
+                  //For some reason we never get here, I havent figured out why yet.
 									console.log('Sending FavStatus');
 									let ID = Number(keyName.split('-')[1]);
 									if(result == true){
