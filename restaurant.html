@@ -91,6 +91,7 @@
   <!-- Main javascript file -->
   <script type="text/javascript" src="js/restaurant_info.js"></script>
   <script>
+    updateOnLoad();
     function toggleFavorite(){
       let ID = window.location.href.split("=")[1];
       toggleFavStatus(ID);

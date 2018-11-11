@@ -27,7 +27,6 @@ self.addEventListener('install', function(event) {
 
 //See https://developers.google.com/web/fundamentals/primers/service-workers/
 self.addEventListener('fetch', function(event) {
-
 	event.respondWith(
 		caches.match(event.request)
 			.then(function(response) {
@@ -145,5 +144,9 @@ self.addEventListener('sync', function(event) {
 	if (event.tag == 'online') {
 		event.waitUntil(uploadLocalData());
 	}
+	if (event.tag == 'pageLoad') {
+		console.log("Page loaded");
+	}
 });
-  
+
+

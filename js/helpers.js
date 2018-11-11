@@ -51,3 +51,12 @@ let toggleFavStatus = (ID) => {
 			}
 		});
 };
+
+let updateOnLoad = () => {
+	console.log('UpdateOnLoad');
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.ready.then(function(swRegistration) {
+			return swRegistration.sync.register('online');
+		});
+	}
+};
