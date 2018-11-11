@@ -57,91 +57,93 @@ self.addEventListener('fetch', function(event) {
 			})
 	);
 });
-// See https://developers.google.com/web/updates/2015/12/background-sync
-self.addEventListener('sync', function(event) {
-	if (event.tag == 'myFirstSync') {
-		event.waitUntil(console.log('myFirstSync'));
-	} else {
-		let IDs = [];
-		//Upload anything that is stored locally
-		idbKeyval.keys()
-			.then(keys => {
-				console.log(keys);
-				for(let i = 0; i < keys.length; i++){
-					console.log(keys[i]);
-					idbKeyval.get(keys[i])
-						.then(results => {
-							let keyName = keys[i];
-							for(let i = 0; i < results.length; i++){
-								let result = results[i];
-								if(typeof result != (typeof false)){
-									if(!result.createdAt){
-										console.log(result);
-										IDs.push(Number(result.restaurant_id));
-										console.log('len' + IDs.length);
-										console.log(IDs[0]);
+let uploadLocalData = () => {
+	console.log("Syncing");
+	let IDs = [];
+	//Upload anything that is stored locally
+	idbKeyval.keys()
+		.then(keys => {
+	console.log(keys);
+			for(let i = 0; i < keys.length; i++){
+				console.log(keys[i]);
+				idbKeyval.get(keys[i])
+		  .then(results => {
+						let keyName = keys[i];
+						for(let i = 0; i < results.length; i++){
+			  let result = results[i];
+			  if(typeof result != (typeof false)){
+								if(!result.createdAt){
+				  console.log(result);
+				  IDs.push(Number(result.restaurant_id));
+				  console.log('len' + IDs.length);
+				  console.log(IDs[0]);
 
-										fetch('http://localhost:1337/reviews/', {
-											method:'POST',
-											body: JSON.stringify({
-												'restaurant_id': result.restaurant_id,
-												'name': result.name,
-												'rating': result.rating,
-												'comments' : result.comments
-											})
-										}).then(response => {
-											console.log(response);
-                  
-										});
-									}
+				  fetch('http://localhost:1337/reviews/', {
+										method:'POST',
+										body: JSON.stringify({
+											'restaurant_id': result.restaurant_id,
+											'name': result.name,
+											'rating': result.rating,
+											'comments' : result.comments
+										})
+				  }).then(response => {
+										console.log(response);
+				
+				  });
+								}
+			  }
+			  else {
+								//It is a favStatus
+								//For some reason we never get here, I havent figured out why yet.
+								console.log('Sending FavStatus');
+								let ID = Number(keyName.split('-')[1]);
+								if(result == true){
+
+				  fetch('http://localhost:1337/restaurants/'+ ID + '/?is_favorite=false', {
+										method: 'PUT'
+				  }).then(result => {
+										console.log(result);
+										location.reload();
+		
+				  });
 								}
 								else {
-                  //It is a favStatus
-                  //For some reason we never get here, I havent figured out why yet.
-									console.log('Sending FavStatus');
-									let ID = Number(keyName.split('-')[1]);
-									if(result == true){
-
-										fetch('http://localhost:1337/restaurants/'+ ID + '/?is_favorite=false', {
-											method: 'PUT'
-										}).then(result => {
-											console.log(result);
-											location.reload();
-          
-										});
-									}
-									else {
-										fetch('http://localhost:1337/restaurants/'+ ID + '/?is_favorite=true', {
-											method: 'PUT'
-										}).then(result => {
-											console.log(result);
-											location.reload();
-          
-										});
-									} 
-								}
-							}
-						});
-					return true;
-				}})
-			.then(() => {
-				console.log(IDs);
-				//Download a current version of the entry
-				for(let i = 0; i < IDs.length; i++){
-					let id = IDs[i];
-					console.log('Current ID' + id);
-					fetch('http://localhost:1337/reviews/?restaurant_id=' + id)
-						.then(response => {return response.json();})
-						.then(json => {
-							console.log('Updating reviews');
-							console.log('Storing reviews for location '+ id);
-							idbKeyval.set('review-' + id, json);
-						})
-						.catch((error) => {
-							console.log('Could not load reviews');
-						});
-				}
-			});
+				  fetch('http://localhost:1337/restaurants/'+ ID + '/?is_favorite=true', {
+										method: 'PUT'
+				  }).then(result => {
+										console.log(result);
+										location.reload();
+		
+				  });
+								} 
+			  }
+						}
+		  });
+				return true;
+	  }})
+		.then(() => {
+			console.log(IDs);
+			//Download a current version of the entry
+			for(let i = 0; i < IDs.length; i++){
+				let id = IDs[i];
+				console.log('Current ID' + id);
+				fetch('http://localhost:1337/reviews/?restaurant_id=' + id)
+					.then(response => {return response.json();})
+					.then(json => {
+						console.log('Updating reviews');
+						console.log('Storing reviews for location '+ id);
+						idbKeyval.set('review-' + id, json);
+		  })
+		  .catch((error) => {
+						console.log('Could not load reviews');
+					});
+			}
+		});
+};
+// See https://developers.google.com/web/updates/2015/12/background-sync
+self.addEventListener('sync', function(event) {
+	if (event.tag == 'online') {
+		event.waitUntil(uploadLocalData());
 	}
 });
   

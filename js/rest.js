@@ -6,7 +6,7 @@ if ('serviceWorker' in navigator) {
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
           //See https://developers.google.com/web/updates/2015/12/background-sync
         navigator.serviceWorker.ready.then(function(swRegistration) {
-          return swRegistration.sync.register('myFirstSync');
+          return swRegistration.sync.register('online');
         });
     
       }, function(err) {
