@@ -106,7 +106,8 @@ nav h1 a {
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
   width: 100%;
-  height: 50px;
+  height: 10%;
+  display: inline-block;
   background-color: #252831;
   align-items: center;
 }
@@ -285,6 +286,7 @@ nav h1 a {
 
   #restaurant-container, #reviews-container {
     position: relative;
+    background-color: #eee;
     width: 90%;
   }
   #restaurants-list li {
@@ -294,6 +296,7 @@ nav h1 a {
     /* Inline-block so that the background color does not cover the entire area behind the element, causing a lot of white space that looks fairly bad */
     background-color: white;
     display:inline-block
+    
   }
 
  }
@@ -308,7 +311,9 @@ nav h1 a {
   }
   #restaurant-container, #reviews-container {
     position: relative;
-    width: 90%
+    width: 90%;
+    background-color: #eee;
+
   }
   #restaurants-list li {
     width: 30%;
